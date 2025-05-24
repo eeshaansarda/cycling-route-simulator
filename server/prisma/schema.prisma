@@ -18,6 +18,7 @@ datasource db {
 
 model Route {
   id        Int      @id @default(autoincrement())
+  name      String
   geometry  Unsupported("geometry(LINESTRING, 4326)")
   distance  Float
   createdAt DateTime @default(now())

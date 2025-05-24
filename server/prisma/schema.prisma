@@ -7,9 +7,20 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  extensions = [postgis]
+}
+
+model Route {
+  id        Int      @id @default(autoincrement())
+  geometry  Unsupported("geometry(LINESTRING, 4326)")
+  distance  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
 }

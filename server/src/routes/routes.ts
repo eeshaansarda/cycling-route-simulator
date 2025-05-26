@@ -19,7 +19,6 @@ router.get('/', async (_req, res) => {
       SELECT id, name
       FROM "Route"
     `);
-    console.log('routes', routes);
     res.json(routes);
   } catch (error) {
     console.error(error);

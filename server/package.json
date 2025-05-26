@@ -21,11 +21,13 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
+    "ws": "^8.18.2",
     "zod": "^3.25.28"
   },
   "devDependencies": {
     "@types/cors": "^2.8.18",
     "@types/node": "^22.15.21",
+    "@types/ws": "^8.18.1",
     "nodemon": "^3.1.10",
     "prisma": "^6.8.2",
     "ts-node": "^10.9.2",

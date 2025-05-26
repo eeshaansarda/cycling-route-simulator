@@ -17,10 +17,9 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
-import { Label } from '@/components/ui/label';
 import length from '@turf/length';
 import { lineString } from '@turf/helpers';
+import SimulationPanel from './SimulationPanel';
 
 const Sidebar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -131,19 +130,7 @@ const Sidebar: React.FC = () => {
           </>
         )}
       </div>
-
-      <div className="mt-auto space-y-2">
-        <h2 className="text-lg font-semibold">Simulation</h2>
-        <div className="flex space-x-2">
-          <Button>Play</Button>
-          <Button>Pause</Button>
-          <Button>Reset</Button>
-        </div>
-        <div>
-          <Label>Speed</Label>
-          <Slider min={1} max={10} step={1} defaultValue={[5]} />
-        </div>
-      </div>
+        {mode === 'view' && (<SimulationPanel />)}
     </div>
   );
 };

@@ -1,14 +1,16 @@
 import './App.css'
 import MapView from './components/MapView'
 import SideBar from './components/SideBar'
+import { RouteProvider } from './context/RouteContext';
 
 function App() {
-
   return (
-    <div className="flex h-screen">
-      <MapView />
-      <SideBar />
-    </div>
+    <RouteProvider>
+      <div className="flex h-screen">
+        <SideBar />
+        <MapView />
+      </div>
+    </RouteProvider>
   )
 }
 

@@ -3,14 +3,18 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-draw/dist/leaflet.draw.css';
 import 'leaflet-draw';
-import { useRouteContext } from '../context/RouteContext';
+import { useSelector, useDispatch } from 'react-redux';
+import type { AppDispatch, RootState } from '../store';
+import { setDrawnGeometry } from '../store/routesSlice';
 
 const MapView: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const drawnLayerRef = useRef<L.FeatureGroup>(new L.FeatureGroup());
   const drawControlRef = useRef<L.Control.Draw | null>(null);
-  const { mode, routeDetail, drawnGeometry, setDrawnGeometry } = useRouteContext();
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { mode, routeDetail, drawnGeometry } = useSelector((state: RootState) => state.routes);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -34,13 +38,14 @@ const MapView: React.FC = () => {
     map.on(L.Draw.Event.CREATED, (e: any) => {
       drawnItems.clearLayers();
       drawnItems.addLayer(e.layer);
-      // capture GeoJSON
       const gj = e.layer.toGeoJSON().geometry;
-      setDrawnGeometry({ type: 'LineString', coordinates: gj.coordinates });
+      dispatch(setDrawnGeometry({ type: 'LineString', coordinates: gj.coordinates }));
     });
 
-    return () => { map.remove(); };
-  }, [setDrawnGeometry]);
+    return () => {
+      map.remove();
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -69,4 +74,3 @@ const MapView: React.FC = () => {
 };
 
 export default MapView;
-

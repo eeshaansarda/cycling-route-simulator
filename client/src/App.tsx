@@ -1,17 +1,18 @@
-import './App.css'
-import MapView from './components/MapView'
-import SideBar from './components/SideBar'
-import { RouteProvider } from './context/RouteContext';
+import './App.css';
+import MapView from './components/MapView';
+import SideBar from './components/SideBar';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 function App() {
   return (
-    <RouteProvider>
+    <Provider store={store}>
       <div className="flex h-screen">
         <SideBar />
         <MapView />
       </div>
-    </RouteProvider>
-  )
+    </Provider>
+  );
 }
 
-export default App
+export default App;

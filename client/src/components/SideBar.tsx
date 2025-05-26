@@ -1,7 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useRouteContext } from '../context/RouteContext';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  fetchRoutes,
+  fetchRouteDetail,
+  saveRoute,
+  setSelectedRouteId,
+  deleteRoute
+} from '../store/routesSlice';
+import type { AppDispatch, RootState } from '../store';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
@@ -9,20 +23,17 @@ import length from '@turf/length';
 import { lineString } from '@turf/helpers';
 
 const Sidebar: React.FC = () => {
-  const {
-    routes,
-    selectedRouteId,
-    setSelectedRouteId,
-    mode,
-    drawnGeometry,
-    routeDetail,
-    setDrawnGeometry,
-    refreshRoutes,
-  } = useRouteContext();
+  const dispatch = useDispatch<AppDispatch>();
+  const { routes, selectedRouteId, mode, routeDetail, drawnGeometry } = useSelector(
+    (state: RootState) => state.routes
+  );
   const [newRouteName, setNewRouteName] = useState('');
-
-  // compute local stats for edit mode
   const [tempDistance, setTempDistance] = useState(0);
+
+  useEffect(() => {
+    dispatch(fetchRoutes());
+  }, [dispatch]);
+
   useEffect(() => {
     if (mode === 'edit' && drawnGeometry) {
       const line = lineString(drawnGeometry.coordinates);
@@ -31,37 +42,43 @@ const Sidebar: React.FC = () => {
     }
   }, [drawnGeometry, mode]);
 
+  useEffect(() => {
+    if (typeof selectedRouteId === 'number') dispatch(fetchRouteDetail(selectedRouteId));
+  }, [selectedRouteId, dispatch]);
+
   const handleSave = () => {
     if (!drawnGeometry || !newRouteName) return;
     const line = lineString(drawnGeometry.coordinates);
     const dist = length(line, { units: 'kilometers' });
+    dispatch(saveRoute({ name: newRouteName, geometry: drawnGeometry, distance: dist }));
+    setNewRouteName('');
+  };
 
-    fetch('http://localhost:3000/api/routes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: newRouteName, geometry: drawnGeometry, distance: dist }),
-    })
-      .then(res => {
-        if (!res.ok) throw new Error('Save failed');
-        setNewRouteName('');
-        setDrawnGeometry(null);
-        setSelectedRouteId('new');
-        refreshRoutes();
-      })
-      .catch(err => console.error(err));
+  const handleDeleteRoute = async () => {
+    if (!routeDetail?.id) return;
+    const confirmed = confirm(`Are you sure you want to delete "${routeDetail.name}"?`);
+    if (!confirmed) return;
+
+    try {
+      await dispatch(deleteRoute(routeDetail.id));
+      dispatch(fetchRoutes());
+      dispatch(setSelectedRouteId('new'));
+    } catch (err) {
+      console.error('Delete failed', err);
+    }
   };
 
   return (
     <div className="w-80 p-4 bg-white border-r space-y-6 flex flex-col">
-      {/* Route Selector */}
       <div className="space-y-2">
         <h2 className="text-lg font-semibold">Routes</h2>
         <Select
           value={selectedRouteId === 'new' ? 'new' : selectedRouteId?.toString() ?? 'new'}
           onValueChange={val => {
-            if (val === 'new') setSelectedRouteId('new');
-            else setSelectedRouteId(Number(val));
-          }}>
+            if (val === 'new') dispatch(setSelectedRouteId('new'));
+            else dispatch(setSelectedRouteId(Number(val)));
+          }}
+        >
           <SelectTrigger>
             <SelectValue placeholder="-- Select or Create --" />
           </SelectTrigger>
@@ -92,7 +109,6 @@ const Sidebar: React.FC = () => {
         )}
       </div>
 
-      {/* Route Statistics */}
       <div className="space-y-1">
         <h2 className="text-lg font-semibold">Route Statistics</h2>
         <p>
@@ -103,11 +119,19 @@ const Sidebar: React.FC = () => {
           km
         </p>
         {mode === 'view' && routeDetail && (
-          <p>Created: {new Date(routeDetail.createdAt).toLocaleString()}</p>
+          <>
+            <p>Created: {new Date(routeDetail.createdAt).toLocaleString()}</p>
+            <Button
+              variant="destructive"
+              className="w-full mt-4"
+              onClick={handleDeleteRoute}
+            >
+              Delete Route
+            </Button>
+          </>
         )}
       </div>
 
-      {/* Simulation Controls */}
       <div className="mt-auto space-y-2">
         <h2 className="text-lg font-semibold">Simulation</h2>
         <div className="flex space-x-2">

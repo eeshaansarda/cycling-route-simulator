@@ -16,7 +16,7 @@ interface RouteResult {
 router.get('/', async (_req, res) => {
   try {
     const routes = await prisma.$queryRawUnsafe(`
-      SELECT id, name, ST_AsGeoJSON(geometry)::json as geometry, distance, "createdAt", "updatedAt"
+      SELECT id, name
       FROM "Route"
     `);
     res.json(routes);

@@ -4,7 +4,6 @@ import 'dotenv/config'
 import http from 'http';
 
 import routeRoutes from './routes/routes';
-//import simulationRoutes from './routes/simulation';
 import simulationWS from './ws/simulation';
 
 const app = express();
@@ -15,7 +14,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/routes', routeRoutes);
-//app.use('/api/simulate', simulationRoutes);
 
 server.on('upgrade', (request, socket, head) => {
   console.log('upgrade', request.url);

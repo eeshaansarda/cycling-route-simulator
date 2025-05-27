@@ -1,13 +1,13 @@
 ## Demo Previews
 
-<h3>🆕 Create New Route</h3>
-<video src="./videos/new-route.webm" autoplay loop muted playsinline style="max-width: 100%; height: auto;"></video>
+### 🆕 Create New Route
+![Create New Route](./videos/new-route.webm)
 
-<h3>🗑️ Delete Route</h3>
-<video src="./videos/delete.webm" autoplay loop muted playsinline style="max-width: 100%; height: auto;"></video>
+### 🗑️ Delete Route
+![Delete Route](./videos/delete.webm)
 
-<h3>▶️ Simulate Route</h3>
-<video src="./videos/simulate.webm" autoplay loop muted playsinline style="max-width: 100%; height: auto;"></video>
+### ▶️ Simulate Route
+![Simulate Route](./videos/simulate.webm)
 
-<h3>🔌 WebSocket Updates</h3>
-<video src="./videos/websocket.webm" autoplay loop muted playsinline style="max-width: 100%; height: auto;"></video>
+### 🔌 WebSocket Updates
+![WebSocket Updates](./videos/websocket.webm)

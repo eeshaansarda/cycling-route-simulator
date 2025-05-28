@@ -3,6 +3,7 @@
 ### Project Overview
 
 A web application that enables cyclists to draw routes on an interactive map and simulate a cycling journey along those routes with smooth animation.
+Check out the video presenting the application attached to the releases.
 
 ---
 
